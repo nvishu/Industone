@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Industone Fund Management | Precision Investments. Timeless Wealth.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+/* ─── CSS VARIABLES ─── */
+:root {
+  --gold:        #c9a84c;
+  --gold-lt:     #e8d48b;
+  --gold-dk:     #a07835;
+  --gold-glow:   rgba(201,168,76,0.18);
+  --black:       #060606;
+  --dark1:       #0e0e0e;
+  --dark2:       #181818;
+  --dark3:       #222222;
+  --dark4:       #2c2c2c;
+  --text:        #e4e4e4;
+  --text-muted:  #7a7a7a;
+  --text-dim:    #444;
+  --green:       #4caf50;
+  --red:         #ef5350;
+  --border:      rgba(201,168,76,0.14);
+  --border-hl:   rgba(201,168,76,0.38);
+  --tick-h:      36px;
+  --nav-h:       68px;
+}
+
+/* ─── RESET ─── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Montserrat',sans-serif;background:var(--black);color:var(--text);overflow-x:hidden;line-height:1.6}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:inherit}
+input,select,textarea{font-family:inherit;outline:none}
+img{display:block;max-width:100%}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--dark1)}
+::-webkit-scrollbar-thumb{background:var(--gold-dk);border-radius:3px}
+
+/* ─── UP / DOWN GLOBAL ─── */
+.up{color:var(--green)!important}
+.down{color:var(--red)!important}
+
+/* ─── GOLD GRADIENT TEXT ─── */
+.gg{background:linear-gradient(130deg,#a07835 0%,#e8d48b 45%,#c9a84c 70%,#a07835 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+/* ─── SECTION TAG ─── */
+.stag{display:inline-block;font-size:.6rem;letter-spacing:.35em;text-transform:uppercase;
+      color:var(--gold);margin-bottom:.8rem}
+.stag::before{content:'── ';opacity:.5}
+.stag::after{content:' ──';opacity:.5}
+
+.divider{width:48px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:1.2rem auto}
+
+/* ─── FADE IN (scroll) ─── */
+.fi{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
+.fi.vis{opacity:1;transform:translateY(0)}
+.fi.d1{transition-delay:.1s}
+.fi.d2{transition-delay:.2s}
+.fi.d3{transition-delay:.3s}
+
+/* ════════════════════════════════════════════
+   NAVBAR
+════════════════════════════════════════════ */
+#nav{
+  position:fixed;top:0;left:0;width:100%;z-index:1000;height:var(--nav-h);
+  background:rgba(6,6,6,.96);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;
+  transition:box-shadow .3s
+}
+#nav.scrolled{box-shadow:0 4px 28px rgba(0,0,0,.7)}
+
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-brand .b-icon{
+  width:40px;height:40px;border:1.5px solid var(--gold);border-radius:2px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px
+}
+.b-icon .bi-bars{display:flex;gap:2px;align-items:flex-end}
+.b-icon .bi-bars span{background:var(--gold);width:3px;border-radius:1px}
+.b-icon .bi-bars span:nth-child(1){height:7px}
+.b-icon .bi-bars span:nth-child(2){height:10px}
+.b-icon .bi-bars span:nth-child(3){height:13px}
+.b-icon .bi-bars span:nth-child(4){height:16px}
+.b-icon .bi-arrow{width:18px;height:1.5px;background:linear-gradient(90deg,transparent,var(--gold));
+  position:relative;margin-top:2px}
+.b-icon .bi-arrow::after{content:'';position:absolute;right:-1px;top:-3px;
+  border:3px solid transparent;border-left:4px solid var(--gold);border-bottom-color:var(--gold)}
+
+.nav-brand .b-text .b-name{
+  font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;
+  color:var(--gold);letter-spacing:.18em;line-height:1.1
+}
+.nav-brand .b-text .b-sub{font-size:.5rem;letter-spacing:.3em;color:var(--gold-lt);text-transform:uppercase}
+
+.nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
+.nav-links a{font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);
+  position:relative;transition:color .25s;padding:4px 0}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;
+  background:var(--gold);transition:width .25s}
+.nav-links a:hover{color:var(--gold)}
+.nav-links a:hover::after{width:100%}
+
+.btn-login{
+  border:1px solid var(--gold);background:transparent;color:var(--gold);
+  padding:8px 22px;font-size:.7rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+  border-radius:1px;transition:all .25s
+}
+.btn-login:hover{background:var(--gold);color:var(--black)}
+
+.hamburger{display:none;flex-direction:column;gap:5px;padding:4px;background:none;border:none}
+.hamburger span{width:22px;height:1.5px;background:var(--gold);transition:all .3s;display:block}
+
+/* ════════════════════════════════════════════
+   LIVE TICKER
+════════════════════════════════════════════ */
+#ticker{
+  position:fixed;top:var(--nav-h);left:0;width:100%;height:var(--tick-h);z-index:999;
+  background:var(--dark2);border-bottom:1px solid var(--border);
+  overflow:hidden;display:flex;align-items:center
+}
+.ticker-track{
+  display:flex;white-space:nowrap;
+  animation:tickerScroll 55s linear infinite
+}
+.ticker-track:hover{animation-play-state:paused}
+@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+.t-item{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:0 24px;font-size:.68rem;font-weight:600;letter-spacing:.02em;
+  border-right:1px solid rgba(201,168,76,.12)
+}
+.t-name{color:var(--gold)}
+.t-val{color:var(--text)}
+.t-chg{font-weight:700}
+
+/* ════════════════════════════════════════════
+   SHARED BUTTONS
+════════════════════════════════════════════ */
+.btn-gold{
+  background:linear-gradient(135deg,var(--gold-dk) 0%,var(--gold) 50%,var(--gold-dk) 100%);
+  background-size:200%;background-position:left;
+  color:var(--black);border:none;padding:13px 32px;
+  font-size:.75rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  border-radius:1px;transition:all .35s
+}
+.btn-gold:hover{background-position:right;box-shadow:0 6px 24px rgba(201,168,76,.3);transform:translateY(-2px)}
+
+.btn-outline-gold{
+  background:transparent;border:1px solid var(--gold);color:var(--gold);
+  padding:13px 32px;font-size:.75rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+  border-radius:1px;transition:all .3s
+}
+.btn-outline-gold:hover{background:rgba(201,168,76,.08);transform:translateY(-2px)}
+
+/* ════════════════════════════════════════════
+   MAIN SITE WRAPPER
+════════════════════════════════════════════ */
+#main-site{padding-top:calc(var(--nav-h) + var(--tick-h))}
+#dashboard-view{display:none;padding-top:calc(var(--nav-h) + var(--tick-h));min-height:100vh}
+
+/* ════════════════════════════════════════════
+   HERO
+════════════════════════════════════════════ */
+#hero{
+  min-height:calc(100vh - var(--nav-h) - var(--tick-h));
+  position:relative;display:flex;align-items:center;overflow:hidden
+}
+.hero-bg-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(201,168,76,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(201,168,76,.025) 1px,transparent 1px);
+  background-size:70px 70px
+}
+.hero-glow-l{position:absolute;left:-10%;top:20%;width:50%;height:60%;
+  background:radial-gradient(ellipse,rgba(201,168,76,.06) 0%,transparent 70%);pointer-events:none}
+.hero-glow-r{position:absolute;right:-5%;bottom:10%;width:40%;height:50%;
+  background:radial-gradient(ellipse,rgba(201,168,76,.04) 0%,transparent 70%);pointer-events:none}
+
+.hero-inner{
+  position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:5rem 2.5rem;
+  display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center
+}
+
+/* Left text */
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid rgba(201,168,76,.35);border-radius:50px;
+  padding:5px 16px;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+  margin-bottom:1.8rem
+}
+.hero-badge i{font-size:.55rem}
+
+.hero-h1{
+  font-family:'Playfair Display',serif;font-size:3.6rem;font-weight:800;
+  line-height:1.08;margin-bottom:1.4rem;letter-spacing:-.01em
+}
+
+.hero-tagline{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:1.15rem;color:var(--gold-lt);margin-bottom:1.2rem
+}
+
+.hero-p{font-size:.86rem;color:var(--text-muted);line-height:1.85;margin-bottom:2.4rem;max-width:470px}
+
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap}
+
+/* Right stats */
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.stat-box{
+  background:rgba(255,255,255,.025);border:1px solid var(--border);
+  border-radius:3px;padding:1.5rem 1.3rem;position:relative;overflow:hidden;
+  transition:all .3s
+}
+.stat-box::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%;background:var(--gold)}
+.stat-box:hover{border-color:var(--border-hl);background:rgba(201,168,76,.04)}
+.stat-num{
+  font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;
+  color:var(--gold);margin-bottom:.25rem
+}
+.stat-lbl{font-size:.62rem;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase}
+.stat-sub{font-size:.7rem;color:var(--green);margin-top:.3rem}
+
+/* ════════════════════════════════════════════
+   STATS SCROLLING BANNER
+════════════════════════════════════════════ */
+#stats-banner{
+  background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02));
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  overflow:hidden;padding:.2rem 0
+}
+.sb-track{display:flex;animation:sbScroll 28s linear infinite;white-space:nowrap}
+.sb-track:hover{animation-play-state:paused}
+@keyframes sbScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.sb-item{
+  display:inline-flex;align-items:center;gap:1rem;
+  padding:.9rem 2.5rem;border-right:1px solid var(--border)
+}
+.sb-num{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--gold)}
+.sb-lbl{font-size:.6rem;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase}
+
+/* ════════════════════════════════════════════
+   SECTION SHARED
+════════════════════════════════════════════ */
+section{padding:6rem 2.5rem}
+.mw{max-width:1280px;margin:0 auto}
+.sec-hd{text-align:center;margin-bottom:3.5rem}
+.sec-hd h2{
+  font-family:'Playfair Display',serif;font-size:2.7rem;font-weight:700;
+  margin-bottom:.8rem;line-height:1.15
+}
+.sec-hd p{font-size:.87rem;color:var(--text-muted);max-width:580px;margin:0 auto;line-height:1.8}
+
+/* ════════════════════════════════════════════
+   ABOUT
+════════════════════════════════════════════ */
+#about{background:var(--dark1)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+
+.about-text h2{
+  font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;
+  margin-bottom:1.4rem;line-height:1.15
+}
+.about-text p{font-size:.86rem;color:var(--text-muted);line-height:1.9;margin-bottom:1rem}
+
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:1.8rem}
+.feat-item{display:flex;align-items:center;gap:9px;font-size:.8rem;color:var(--text)}
+.feat-item i{color:var(--gold);font-size:.8rem;flex-shrink:0}
+
+/* SEBI card */
+.sebi-card{
+  background:var(--dark2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;
+  margin-bottom:1.2rem
+}
+.sebi-card .sc-lbl{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
+.sebi-card .sc-val{font-family:'Playfair Display',serif;font-size:1.25rem;color:var(--text)}
+.sebi-card .sc-sub{font-size:.7rem;color:var(--text-muted);margin-top:.3rem}
+
+.val-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}
+.val-box{
+  background:var(--dark3);border:1px solid var(--border);border-radius:3px;
+  padding:1.1rem;text-align:center;transition:all .3s
+}
+.val-box:hover{border-color:var(--border-hl);background:rgba(201,168,76,.04);transform:translateY(-2px)}
+.val-box i{font-size:1.3rem;color:var(--gold);margin-bottom:.5rem;display:block}
+.val-box span{font-size:.72rem;color:var(--text);font-weight:600}
+
+/* ════════════════════════════════════════════
+   FUNDS / NAV TRACKER
+════════════════════════════════════════════ */
+#funds{background:var(--black)}
+.funds-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem}
+
+.fund-card{
+  background:var(--dark2);border:1px solid var(--border);border-radius:5px;
+  overflow:hidden;transition:all .4s
+}
+.fund-card:hover{border-color:var(--border-hl);transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.45)}
+
+.fc-head{
+  background:linear-gradient(135deg,rgba(201,168,76,.09),rgba(201,168,76,.03));
+  padding:1.4rem;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:flex-start;gap:1rem
+}
+.fc-type{
+  font-size:.57rem;letter-spacing:.22em;text-transform:uppercase;
+  background:rgba(201,168,76,.13);color:var(--gold);
+  padding:3px 10px;border-radius:50px;border:1px solid rgba(201,168,76,.28);
+  display:inline-block;margin-bottom:.6rem
+}
+.fc-name{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold-lt);margin-bottom:.2rem}
+.fc-cat{font-size:.72rem;color:var(--text-muted)}
+.fc-desc{font-size:.7rem;color:var(--text-muted);margin-top:.4rem;line-height:1.5}
+
+.nav-box{text-align:right;flex-shrink:0}
+.nav-price{font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:700;color:var(--gold);line-height:1}
+.nav-chg{font-size:.7rem;font-weight:700;margin-top:.25rem}
+.nav-dt{font-size:.6rem;color:var(--text-muted);margin-top:.2rem}
+
+.fc-body{padding:1.4rem}
+.returns-lbl{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem}
+.returns-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1.4rem}
+.ret-cell{background:rgba(255,255,255,.025);border-radius:3px;padding:.6rem;text-align:center}
+.ret-period{font-size:.58rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem}
+.ret-val{font-size:.9rem;font-weight:700}
+
+.fc-foot{display:flex;justify-content:space-between;align-items:center}
+.fc-min{font-size:.72rem;color:var(--text-muted)}
+.fc-min strong{color:var(--gold)}
+
+.btn-invest{
+  background:linear-gradient(135deg,var(--gold-dk),var(--gold));
+  color:var(--black);border:none;padding:7px 18px;font-size:.68rem;
+  font-weight:700;letter-spacing:.1em;border-radius:1px;transition:all .3s
+}
+.btn-invest:hover{box-shadow:0 4px 16px rgba(201,168,76,.35);transform:translateY(-1px)}
+
+/* ════════════════════════════════════════════
+   MARKET DATA
+════════════════════════════════════════════ */
+#market{background:var(--dark1)}
+.idx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-bottom:2rem}
+
+.idx-card{
+  background:var(--dark2);border:1px solid var(--border);border-radius:4px;
+  padding:1.4rem;transition:border-color .3s
+}
+.idx-card:hover{border-color:var(--border-hl)}
+.idx-exch{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem}
+.idx-name-big{font-size:.82rem;font-weight:600;color:var(--text);margin-bottom:.5rem}
+.idx-val{font-family:'Playfair Display',serif;font-size:1.85rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
+.idx-chg-row{font-size:.78rem;font-weight:700}
+.idx-mini-chart{height:46px;margin-top:.9rem}
+
+.stocks-cols{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.stk-panel{background:var(--dark2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.stk-panel-hd{
+  padding:.9rem 1.3rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px
+}
+.stk-panel-hd h4{font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:600;color:var(--gold-lt)}
+
+.stk-table{width:100%;border-collapse:collapse}
+.stk-table th{
+  font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);
+  padding:.6rem 1.3rem;text-align:left;border-bottom:1px solid rgba(255,255,255,.04)
+}
+.stk-table td{
+  padding:.62rem 1.3rem;font-size:.78rem;
+  border-bottom:1px solid rgba(255,255,255,.025)
+}
+.stk-table tr:last-child td{border-bottom:none}
+.stk-table td:first-child{font-weight:600;color:var(--text)}
+
+/* ════════════════════════════════════════════
+   PERFORMANCE
+════════════════════════════════════════════ */
+#performance{background:var(--black)}
+.perf-shell{
+  background:var(--dark2);border:1px solid var(--border);border-radius:5px;padding:2rem
+}
+.perf-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.8rem;flex-wrap:wrap;gap:1rem}
+
+.period-tabs{display:flex;gap:.4rem}
+.ptab{
+  background:transparent;border:1px solid rgba(201,168,76,.2);color:var(--text-muted);
+  padding:5px 16px;font-size:.7rem;letter-spacing:.08em;border-radius:1px;transition:all .25s
+}
+.ptab.active{background:rgba(201,168,76,.14);border-color:var(--gold);color:var(--gold)}
+.ptab:hover{border-color:var(--border-hl)}
+
+.legend{display:flex;gap:1.4rem;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--text-muted)}
+.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+/* ════════════════════════════════════════════
+   CONTACT
+════════════════════════════════════════════ */
+#contact{background:var(--dark1)}
+.contact-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:4rem}
+
+.cinfo h3{font-family:'Playfair Display',serif;font-size:2rem;line-height:1.2;margin-bottom:1.8rem}
+
+.cdetail{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.4rem}
+.cicon{
+  width:38px;height:38px;border:1px solid rgba(201,168,76,.3);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0
+}
+.cicon i{color:var(--gold);font-size:.82rem}
+.cd-lbl{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.2rem}
+.cd-val{font-size:.82rem;color:var(--text);line-height:1.6}
+
+.cform{
+  background:var(--dark2);border:1px solid var(--border);border-radius:5px;padding:2rem
+}
+.cform h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold-lt);margin-bottom:1.5rem}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.45rem}
+.fg input,.fg select,.fg textarea{
+  width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.14);
+  color:var(--text);padding:11px 14px;border-radius:3px;font-size:.83rem;transition:border-color .25s
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold)}
+.fg select option{background:var(--dark2)}
+.fg textarea{resize:vertical;min-height:90px}
+
+/* ════════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════════ */
+footer{background:var(--dark2);border-top:1px solid var(--border);padding:4rem 2.5rem 2rem}
+.disclaimer{
+  max-width:1280px;margin:0 auto 2.5rem;
+  background:rgba(201,168,76,.04);border:1px solid var(--border);border-radius:3px;
+  padding:1rem 1.4rem;font-size:.68rem;color:var(--text-muted);line-height:1.7
+}
+.disclaimer strong{color:var(--gold)}
+
+.footer-cols{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+.footer-brand .fb-name{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);letter-spacing:.18em}
+.footer-brand .fb-sub{font-size:.48rem;letter-spacing:.3em;color:var(--gold-lt);text-transform:uppercase;margin-bottom:.8rem}
+.footer-brand p{font-size:.78rem;color:var(--text-muted);line-height:1.8;margin-bottom:1.2rem}
+.social-row{display:flex;gap:.6rem}
+.soc{
+  width:33px;height:33px;border:1px solid rgba(201,168,76,.2);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:var(--text-muted);
+  font-size:.75rem;transition:all .25s
+}
+.soc:hover{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.08)}
+
+.fcol h4{font-size:.66rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+.fcol ul{list-style:none}
+.fcol ul li{margin-bottom:.5rem}
+.fcol ul li a{font-size:.78rem;color:var(--text-muted);transition:color .25s}
+.fcol ul li a:hover{color:var(--gold)}
+
+.footer-bot{max-width:1280px;margin:0 auto;border-top:1px solid rgba(255,255,255,.04);padding-top:1.4rem;
+  display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.footer-bot p{font-size:.67rem;color:var(--text-dim)}
+
+/* ════════════════════════════════════════════
+   AUTH MODAL
+════════════════════════════════════════════ */
+#auth-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9000;
+  align-items:center;justify-content:center;backdrop-filter:blur(12px)
+}
+#auth-overlay.open{display:flex}
+
+.auth-modal{
+  background:var(--dark2);border:1px solid rgba(201,168,76,.28);border-radius:6px;
+  width:92%;max-width:440px;padding:2.2rem;position:relative;
+  animation:modalDrop .3s cubic-bezier(.2,.8,.4,1)
+}
+@keyframes modalDrop{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+
+.modal-x{
+  position:absolute;top:.9rem;right:.9rem;background:none;border:none;
+  color:var(--text-muted);font-size:1.1rem;transition:color .2s
+}
+.modal-x:hover{color:var(--gold)}
+
+.modal-brand{text-align:center;margin-bottom:1.6rem}
+.modal-brand .mb-name{font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--gold);letter-spacing:.15em}
+.modal-brand .mb-sub{font-size:.68rem;color:var(--text-muted);margin-top:.2rem}
+
+.mtabs{display:flex;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:1.5rem}
+.mtab{flex:1;padding:10px;background:none;border:none;border-bottom:2px solid transparent;
+  color:var(--text-muted);font-size:.76rem;font-weight:600;letter-spacing:.1em;transition:all .25s}
+.mtab.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+.mform{display:none}.mform.active{display:block}
+
+.mmsg{font-size:.72rem;padding:8px 12px;border-radius:3px;margin-bottom:1rem;display:none}
+.mmsg.ok{background:rgba(76,175,80,.12);border:1px solid rgba(76,175,80,.3);color:var(--green);display:block}
+.mmsg.err{background:rgba(239,83,80,.12);border:1px solid rgba(239,83,80,.3);color:var(--red);display:block}
+
+.modal-demo{text-align:center;margin-top:.8rem;font-size:.68rem;color:var(--gold-dk)}
+
+/* ════════════════════════════════════════════
+   DASHBOARD
+════════════════════════════════════════════ */
+.dash-hd{
+  background:var(--dark2);border-bottom:1px solid var(--border);
+  padding:1.4rem 2.5rem;display:flex;justify-content:space-between;align-items:center;gap:1rem
+}
+.dash-hd h2{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gold);line-height:1.1}
+.dash-hd p{font-size:.73rem;color:var(--text-muted);margin-top:.2rem}
+
+.dash-user{display:flex;align-items:center;gap:.9rem}
+.d-avatar{
+  width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dk),var(--gold));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--black)
+}
+.d-email{font-size:.76rem;font-weight:600;color:var(--text);line-height:1.1}
+.d-role{font-size:.62rem;color:var(--text-muted)}
+
+.dash-content{max-width:1280px;margin:0 auto;padding:1.8rem 2.5rem}
+
+/* Summary cards */
+.dash-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.8rem}
+.dc{
+  background:var(--dark2);border:1px solid var(--border);border-radius:4px;
+  padding:1.2rem;position:relative;overflow:hidden
+}
+.dc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.dc-icon{position:absolute;top:1rem;right:1rem;font-size:1.4rem;color:rgba(201,168,76,.2)}
+.dc-lbl{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem}
+.dc-val{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gold);font-weight:700}
+.dc-sub{font-size:.68rem;margin-top:.25rem;color:var(--text-muted)}
+
+/* Main grid */
+.dash-main{display:grid;grid-template-columns:2fr 1fr;gap:1.4rem;margin-bottom:1.8rem}
+.dash-side{display:flex;flex-direction:column;gap:1.2rem}
+
+.dp{background:var(--dark2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.dp-hd{
+  padding:.9rem 1.4rem;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center
+}
+.dp-hd h4{font-size:.84rem;font-weight:600;color:var(--gold-lt)}
+.dp-hd span{font-size:.68rem;color:var(--text-muted)}
+.dp-bd{padding:1.2rem}
+.dp-bd.pad0{padding:0}
+
+/* Holdings table */
+.h-table{width:100%;border-collapse:collapse}
+.h-table th{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);
+  padding:.6rem 1rem;text-align:left;border-bottom:1px solid rgba(255,255,255,.04)}
+.h-table td{padding:.75rem 1rem;font-size:.78rem;border-bottom:1px solid rgba(255,255,255,.025)}
+.h-table tr:last-child td{border-bottom:none}
+.f-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}
+
+/* Market mini */
+.mkt-mini{display:flex;flex-direction:column;gap:.7rem}
+.mmi{
+  background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:3px;
+  padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center
+}
+.mmi-l .mmi-name{font-size:.68rem;color:var(--gold);font-weight:600}
+.mmi-l .mmi-val{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--text)}
+.mmi-chg{font-size:.7rem;font-weight:700}
+
+/* NAV mini list */
+.nav-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:.55rem 0;border-bottom:1px solid rgba(255,255,255,.04)
+}
+.nav-item:last-child{border-bottom:none}
+.ni-name{font-size:.73rem;color:var(--text);font-weight:600}
+.ni-cat{font-size:.62rem;color:var(--text-muted)}
+.ni-price{font-size:.88rem;font-weight:700;color:var(--gold);text-align:right}
+.ni-chg{font-size:.62rem;text-align:right}
+
+/* Transactions */
+.tx-table{width:100%;border-collapse:collapse}
+.tx-table th{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);
+  padding:.6rem 1rem;text-align:left;border-bottom:1px solid rgba(255,255,255,.04)}
+.tx-table td{padding:.68rem 1rem;font-size:.77rem;border-bottom:1px solid rgba(255,255,255,.025)}
+.tx-table tr:last-child td{border-bottom:none}
+.tx-badge{font-size:.58rem;padding:2px 9px;border-radius:50px;font-weight:700;letter-spacing:.06em}
+.tx-badge.buy{background:rgba(76,175,80,.12);color:var(--green);border:1px solid rgba(76,175,80,.28)}
+.tx-badge.sell{background:rgba(239,83,80,.12);color:var(--red);border:1px solid rgba(239,83,80,.28)}
+
+/* ════════════════════════════════════════════
+   TOAST
+════════════════════════════════════════════ */
+#toast{
+  position:fixed;bottom:2rem;right:2rem;z-index:9999;
+  background:var(--dark3);border:1px solid var(--gold);border-radius:4px;
+  padding:.9rem 1.4rem;font-size:.8rem;color:var(--text);
+  transform:translateY(80px);opacity:0;transition:all .35s;pointer-events:none
+}
+#toast.show{transform:translateY(0);opacity:1}
+
+/* ════════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════════ */
+@media(max-width:1024px){
+  .hero-inner{grid-template-columns:1fr;gap:3rem}
+  .hero-h1{font-size:2.8rem}
+  .hero-stats{max-width:520px}
+  .about-grid{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .funds-grid{grid-template-columns:1fr}
+  .footer-cols{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  section{padding:4rem 1.4rem}
+  .hero-h1{font-size:2.2rem}
+  .sec-hd h2{font-size:2rem}
+  .idx-grid{grid-template-columns:1fr}
+  .stocks-cols{grid-template-columns:1fr}
+  .dash-summary{grid-template-columns:1fr 1fr}
+  .dash-main{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  :root{--nav-h:60px;--tick-h:30px}
+  .hero-stats{grid-template-columns:1fr 1fr}
+  .stat-num{font-size:1.5rem}
+  .dash-summary{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav id="nav">
+  <a href="#" class="nav-brand" onclick="goHome()">
+    <div class="b-icon">
+      <div class="bi-bars">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div class="bi-arrow"></div>
+    </div>
+    <div class="b-text">
+      <div class="b-name">INDUSTONE</div>
+      <div class="b-sub">Fund Management</div>
+    </div>
+  </a>
+
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#" onclick="scrollTo('hero')">Home</a></li>
+    <li><a href="#" onclick="scrollTo('about')">About</a></li>
+    <li><a href="#" onclick="scrollTo('funds')">Our Funds</a></li>
+    <li><a href="#" onclick="scrollTo('market')">Market</a></li>
+    <li><a href="#" onclick="scrollTo('performance')">Performance</a></li>
+    <li><a href="#" onclick="scrollTo('contact')">Contact</a></li>
+    <li><button class="btn-login" onclick="openAuth()">Investor Login</button></li>
+  </ul>
+
+  <button class="hamburger" id="ham" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ═══════════════ TICKER ═══════════════ -->
+<div id="ticker">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<!-- ═══════════════ MAIN SITE ═══════════════ -->
+<div id="main-site">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-glow-l"></div>
+    <div class="hero-glow-r"></div>
+    <div class="hero-inner">
+      <div class="fi">
+        <div class="hero-badge"><i class="fas fa-certificate"></i>SEBI Registered Portfolio Manager</div>
+        <h1 class="hero-h1">
+          <span class="gg">Precision</span><br>
+          Investments.<br>
+          <span class="gg">Timeless</span> Wealth.
+        </h1>
+        <p class="hero-tagline">"Where Vision Meets Value"</p>
+        <p class="hero-p">India's foremost fund management firm crafting long-term wealth through research-driven, disciplined investment strategies across NSE and BSE equity markets.</p>
+        <div class="hero-btns">
+          <button class="btn-gold" onclick="openAuth()">Start Investing</button>
+          <button class="btn-outline-gold" onclick="scrollTo('funds')">Explore Funds</button>
+        </div>
+      </div>
+      <div class="hero-stats fi d2" id="heroStats">
+        <div class="stat-box">
+          <div class="stat-num" id="cAUM">₹0</div>
+          <div class="stat-lbl">Assets Under Management</div>
+          <div class="stat-sub">↑ Consistently growing</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="cCLI">0+</div>
+          <div class="stat-lbl">Active Investors</div>
+          <div class="stat-sub">↑ Across India</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="cRET">0%</div>
+          <div class="stat-lbl">Avg Annual Returns</div>
+          <div class="stat-sub">↑ Since Inception</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="cEXP">0</div>
+          <div class="stat-lbl">Years of Experience</div>
+          <div class="stat-sub">↑ In Indian Markets</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCROLLING BANNER -->
+  <div id="stats-banner">
+    <div class="sb-track" id="sbTrack"></div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="mw">
+      <div class="about-grid">
+        <div class="fi">
+          <div class="stag">Who We Are</div>
+          <h2 class="about-text" style="font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700;line-height:1.15;margin-bottom:1.4rem">
+            Built on Trust,<br><span class="gg">Driven by Returns</span>
+          </h2>
+          <div class="about-text">
+            <p>Industone Fund Management is a SEBI-registered portfolio management firm headquartered in Kolkata, with deep expertise in Indian equity markets. We combine rigorous quantitative research with qualitative insight to deliver superior risk-adjusted returns.</p>
+            <p>Our investment philosophy centers on high-conviction opportunities across market capitalizations, with a disciplined approach to risk that has guided our investors through multiple market cycles with consistent outperformance.</p>
+            <p>Backed by a team of experienced fund managers, analysts, and risk professionals, we bring institutional-grade investment thinking to individual and family wealth management.</p>
+          </div>
+          <div class="feat-grid">
+            <div class="feat-item"><i class="fas fa-check-circle"></i>SEBI Registered PMS</div>
+            <div class="feat-item"><i class="fas fa-check-circle"></i>NSE & BSE Specialist</div>
+            <div class="feat-item"><i class="fas fa-check-circle"></i>Research-Driven Approach</div>
+            <div class="feat-item"><i class="fas fa-check-circle"></i>Transparent Reporting</div>
+            <div class="feat-item"><i class="fas fa-check-circle"></i>Dedicated RM Support</div>
+            <div class="feat-item"><i class="fas fa-check-circle"></i>Customised Portfolio</div>
+            <div class="feat-item"><i class="fas fa-check-circle"></i>Digital Portfolio Access</div>
+            <div class="feat-item"><i class="fas fa-check-circle"></i>Tax-Efficient Investing</div>
+          </div>
+        </div>
+        <div class="fi d2">
+          <div class="sebi-card">
+            <div class="sc-lbl">SEBI Registration Number</div>
+            <div class="sc-val">INP000XXXXXX</div>
+            <div class="sc-sub">Portfolio Manager · Category I · SEBI Compliant</div>
+          </div>
+          <div class="sebi-card">
+            <div class="sc-lbl">CIN Number</div>
+            <div class="sc-val">U67100WB2020PTC000000</div>
+            <div class="sc-sub">Incorporated in West Bengal · Ministry of Corporate Affairs</div>
+          </div>
+          <div class="val-grid">
+            <div class="val-box"><i class="fas fa-shield-alt"></i><span>Risk Control</span></div>
+            <div class="val-box"><i class="fas fa-chart-line"></i><span>Alpha Generation</span></div>
+            <div class="val-box"><i class="fas fa-eye"></i><span>Transparency</span></div>
+            <div class="val-box"><i class="fas fa-handshake"></i><span>Client First</span></div>
+            <div class="val-box"><i class="fas fa-microscope"></i><span>Deep Research</span></div>
+            <div class="val-box"><i class="fas fa-trophy"></i><span>Consistent Alpha</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FUNDS / NAV -->
+  <section id="funds">
+    <div class="mw">
+      <div class="sec-hd fi">
+        <div class="stag">Investment Products</div>
+        <h2>Our <span class="gg">Fund Portfolio</span></h2>
+        <div class="divider"></div>
+        <p>Carefully constructed investment strategies designed to create lasting wealth through disciplined allocation in Indian equity markets.</p>
+      </div>
+      <div class="funds-grid" id="fundsGrid"></div>
+    </div>
+  </section>
+
+  <!-- MARKET DATA -->
+  <section id="market">
+    <div class="mw">
+      <div class="sec-hd fi">
+        <div class="stag">Live Market</div>
+        <h2>Indian Market <span class="gg">Indices</span></h2>
+        <div class="divider"></div>
+        <p>Real-time NSE & BSE market data to keep you informed on prevailing market conditions.</p>
+      </div>
+      <div class="idx-grid" id="idxGrid"></div>
+      <div class="stocks-cols" id="stockCols"></div>
+    </div>
+  </section>
+
+  <!-- PERFORMANCE -->
+  <section id="performance">
+    <div class="mw">
+      <div class="sec-hd fi">
+        <div class="stag">Track Record</div>
+        <h2>Fund <span class="gg">Performance</span></h2>
+        <div class="divider"></div>
+        <p>Consistent outperformance against benchmarks across all fund strategies since inception.</p>
+      </div>
+      <div class="perf-shell fi">
+        <div class="perf-top">
+          <div class="period-tabs">
+            <button class="ptab active" onclick="switchPerf('1Y',this)">1 Year</button>
+            <button class="ptab" onclick="switchPerf('3Y',this)">3 Years</button>
+            <button class="ptab" onclick="switchPerf('5Y',this)">5 Years</button>
+          </div>
+          <div class="legend">
+            <div class="leg-item"><div class="leg-dot" style="background:#c9a84c"></div>Growth Fund</div>
+            <div class="leg-item"><div class="leg-dot" style="background:#e8d48b"></div>Value Fund</div>
+            <div class="leg-item"><div class="leg-dot" style="background:#4caf50"></div>Momentum Fund</div>
+            <div class="leg-item"><div class="leg-dot" style="background:rgba(255,255,255,.35)"></div>Nifty 50</div>
+          </div>
+        </div>
+        <canvas id="perfChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="mw">
+      <div class="sec-hd fi">
+        <div class="stag">Get In Touch</div>
+        <h2>Start Your <span class="gg">Wealth Journey</span></h2>
+        <div class="divider"></div>
+      </div>
+      <div class="contact-grid">
+        <div class="cinfo fi">
+          <h3>Talk to Our<br><span class="gg">Investment Experts</span></h3>
+          <div class="cdetail">
+            <div class="cicon"><i class="fas fa-map-marker-alt"></i></div>
+            <div>
+              <div class="cd-lbl">Registered Office</div>
+              <div class="cd-val">Industone House, 14B Park Street,<br>Kolkata – 700 016, West Bengal, India</div>
+            </div>
+          </div>
+          <div class="cdetail">
+            <div class="cicon"><i class="fas fa-phone-alt"></i></div>
+            <div>
+              <div class="cd-lbl">Phone</div>
+              <div class="cd-val">+91 33 4000 XXXX &nbsp;|&nbsp; +91 98XXX XXXXX</div>
+            </div>
+          </div>
+          <div class="cdetail">
+            <div class="cicon"><i class="fas fa-envelope"></i></div>
+            <div>
+              <div class="cd-lbl">Email</div>
+              <div class="cd-val">invest@industone.in &nbsp;|&nbsp; support@industone.in</div>
+            </div>
+          </div>
+          <div class="cdetail">
+            <div class="cicon"><i class="fas fa-clock"></i></div>
+            <div>
+              <div class="cd-lbl">Working Hours</div>
+              <div class="cd-val">Mon – Fri: 9:00 AM – 6:00 PM &nbsp;|&nbsp; Sat: 10:00 AM – 2:00 PM</div>
+            </div>
+          </div>
+        </div>
+        <div class="cform fi d2">
+          <h3>Request a Consultation</h3>
+          <div class="form-row">
+            <div class="fg"><label>First Name</label><input type="text" id="cf-first" placeholder="Rahul"></div>
+            <div class="fg"><label>Last Name</label><input type="text" id="cf-last" placeholder="Sharma"></div>
+          </div>
+          <div class="form-row">
+            <div class="fg"><label>Email</label><input type="email" id="cf-email" placeholder="rahul@email.com"></div>
+            <div class="fg"><label>Phone</label><input type="tel" id="cf-phone" placeholder="+91 98XXX XXXXX"></div>
+          </div>
+          <div class="fg">
+            <label>Interested In</label>
+            <select>
+              <option>Select Fund</option>
+              <option>Industone Growth Fund</option>
+              <option>Industone Value Fund</option>
+              <option>Industone Momentum Fund</option>
+              <option>Industone Balanced Fund</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Investment Range</label>
+            <select>
+              <option>Select Amount</option>
+              <option>₹25 Lakhs – ₹50 Lakhs</option>
+              <option>₹50 Lakhs – ₹1 Crore</option>
+              <option>₹1 Crore – ₹5 Crore</option>
+              <option>₹5 Crore – ₹10 Crore</option>
+              <option>₹10 Crore+</option>
+            </select>
+          </div>
+          <div class="fg"><label>Message</label><textarea id="cf-msg" placeholder="Tell us about your investment goals and timeline..."></textarea></div>
+          <button class="btn-gold" style="width:100%;margin-top:.3rem" onclick="submitContact(this)">Request Consultation</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="disclaimer">
+      <strong>⚠ Important Disclaimer:</strong> Investments in securities are subject to market risks. Read all related documents carefully before investing. Past performance is not indicative of future results. The NAV of the fund may go up or down. Industone Fund Management Pvt. Ltd. is registered with SEBI as a Portfolio Manager. Registration does not imply that SEBI endorses or guarantees the performance of the portfolio manager. This website is for informational purposes only and does not constitute investment advice.
+    </div>
+    <div class="footer-cols">
+      <div class="footer-brand">
+        <div class="fb-name">INDUSTONE</div>
+        <div class="fb-sub">Fund Management</div>
+        <p>Precision Investments. Timeless Wealth. Your trusted partner for building long-term wealth through disciplined equity investing across NSE and BSE markets.</p>
+        <div class="social-row">
+          <a class="soc" href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a class="soc" href="#"><i class="fab fa-x-twitter"></i></a>
+          <a class="soc" href="#"><i class="fab fa-youtube"></i></a>
+          <a class="soc" href="#"><i class="fab fa-instagram"></i></a>
+          <a class="soc" href="#"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+      <div class="fcol">
+        <h4>Our Funds</h4>
+        <ul>
+          <li><a href="#">Growth Fund</a></li>
+          <li><a href="#">Value Fund</a></li>
+          <li><a href="#">Momentum Fund</a></li>
+          <li><a href="#">Balanced Fund</a></li>
+          <li><a href="#">NAV History</a></li>
+        </ul>
+      </div>
+      <div class="fcol">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#" onclick="scrollTo('about')">About Us</a></li>
+          <li><a href="#">Leadership Team</a></li>
+          <li><a href="#">Investment Philosophy</a></li>
+          <li><a href="#">News & Insights</a></li>
+          <li><a href="#">Careers</a></li>
+        </ul>
+      </div>
+      <div class="fcol">
+        <h4>Investor</h4>
+        <ul>
+          <li><a href="#" onclick="openAuth()">Login / Signup</a></li>
+          <li><a href="#">Portfolio Reports</a></li>
+          <li><a href="#">Tax Statements</a></li>
+          <li><a href="#">SEBI Disclosures</a></li>
+          <li><a href="#">Grievance Redressal</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bot">
+      <p>© 2025 Industone Fund Management Pvt. Ltd. | All Rights Reserved. | Kolkata, West Bengal</p>
+      <p>SEBI Reg. No: INP000XXXXXX | CIN: U67100WB2020PTC000000</p>
+    </div>
+  </footer>
+
+</div><!-- /main-site -->
+
+<!-- ═══════════════ DASHBOARD ═══════════════ -->
+<div id="dashboard-view">
+  <div class="dash-hd">
+    <div>
+      <h2>Welcome, <span id="d-name"></span> 👋</h2>
+      <p>Portfolio Overview &nbsp;·&nbsp; Last refreshed: <span id="d-refresh"></span></p>
+    </div>
+    <div class="dash-user">
+      <div>
+        <div class="d-email" id="d-email"></div>
+        <div class="d-role">Investor Account</div>
+      </div>
+      <div class="d-avatar" id="d-avatar">A</div>
+      <button class="btn-outline-gold" style="padding:7px 18px;font-size:.68rem" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="dash-content">
+    <!-- Summary -->
+    <div class="dash-summary">
+      <div class="dc"><i class="fas fa-wallet dc-icon"></i><div class="dc-lbl">Total Portfolio Value</div><div class="dc-val" id="d-pval">₹0</div><div class="dc-sub" id="d-pchg"></div></div>
+      <div class="dc"><i class="fas fa-chart-line dc-icon"></i><div class="dc-lbl">Total P&amp;L</div><div class="dc-val" id="d-pnl">₹0</div><div class="dc-sub" id="d-pnlp"></div></div>
+      <div class="dc"><i class="fas fa-piggy-bank dc-icon"></i><div class="dc-lbl">Total Invested</div><div class="dc-val" id="d-inv">₹0</div><div class="dc-sub">Cost Basis</div></div>
+      <div class="dc"><i class="fas fa-calendar-check dc-icon"></i><div class="dc-lbl">Member Since</div><div class="dc-val" id="d-since" style="font-size:1rem">—</div><div class="dc-sub">Active Investor</div></div>
+    </div>
+
+    <!-- Main grid -->
+    <div class="dash-main">
+      <div>
+        <!-- Portfolio chart -->
+        <div class="dp" style="margin-bottom:1.2rem">
+          <div class="dp-hd">
+            <h4>Portfolio Performance vs Nifty 50</h4>
+            <span id="d-period">Last 18 months</span>
+          </div>
+          <div class="dp-bd"><canvas id="portChart" height="130"></canvas></div>
+        </div>
+        <!-- Holdings -->
+        <div class="dp">
+          <div class="dp-hd">
+            <h4>My Fund Holdings</h4>
+            <span id="d-holdcount">—</span>
+          </div>
+          <div class="dp-bd pad0">
+            <table class="h-table">
+              <thead><tr><th>Fund</th><th>Units</th><th>Current NAV</th><th>Value</th><th>Gain / Loss</th></tr></thead>
+              <tbody id="d-hold"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side -->
+      <div class="dash-side">
+        <!-- Market -->
+        <div class="dp">
+          <div class="dp-hd"><h4>Market Indices</h4><span>Live</span></div>
+          <div class="dp-bd"><div class="mkt-mini" id="d-mkt"></div></div>
+        </div>
+        <!-- NAV today -->
+        <div class="dp">
+          <div class="dp-hd"><h4>Today's NAV</h4><span id="d-navdate"></span></div>
+          <div class="dp-bd" id="d-nav"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transactions -->
+    <div class="dp">
+      <div class="dp-hd"><h4>Recent Transactions</h4><span>Last 5 entries</span></div>
+      <div class="dp-bd pad0">
+        <table class="tx-table">
+          <thead><tr><th>Date</th><th>Type</th><th>Fund</th><th>Units</th><th>NAV</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody id="d-tx"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ AUTH MODAL ═══════════════ -->
+<div id="auth-overlay">
+  <div class="auth-modal">
+    <button class="modal-x" onclick="closeAuth()"><i class="fas fa-times"></i></button>
+    <div class="modal-brand">
+      <div class="mb-name">INDUSTONE</div>
+      <div class="mb-sub">Investor Portal</div>
+    </div>
+    <div class="mtabs">
+      <button class="mtab active" id="mtab-login" onclick="switchTab('login')">Login</button>
+      <button class="mtab" id="mtab-signup" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- Login -->
+    <div class="mform active" id="mf-login">
+      <div class="mmsg" id="msg-login"></div>
+      <div class="fg"><label>Email</label><input type="email" id="l-email" placeholder="investor@email.com"></div>
+      <div class="fg"><label>Password</label><input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="btn-gold" style="width:100%;margin-top:.5rem" onclick="doLogin()">Access Portfolio</button>
+      <div class="modal-demo">Demo: demo@industone.in / demo123</div>
+      <p style="text-align:center;margin-top:1rem;font-size:.7rem;color:var(--text-muted)">No account? <span style="color:var(--gold);cursor:pointer" onclick="switchTab('signup')">Sign up free</span></p>
+    </div>
+
+    <!-- Signup -->
+    <div class="mform" id="mf-signup">
+      <div class="mmsg" id="msg-signup"></div>
+      <div class="form-row">
+        <div class="fg"><label>First Name</label><input type="text" id="s-first" placeholder="Rahul"></div>
+        <div class="fg"><label>Last Name</label><input type="text" id="s-last" placeholder="Sharma"></div>
+      </div>
+      <div class="fg"><label>Email</label><input type="email" id="s-email" placeholder="rahul@email.com"></div>
+      <div class="fg"><label>Phone</label><input type="tel" id="s-phone" placeholder="+91 98XXX XXXXX"></div>
+      <div class="fg"><label>Password</label><input type="password" id="s-pass" placeholder="Min 6 characters"></div>
+      <button class="btn-gold" style="width:100%;margin-top:.5rem" onclick="doSignup()">Create Account</button>
+      <p style="text-align:center;margin-top:1rem;font-size:.7rem;color:var(--text-muted)">Have an account? <span style="color:var(--gold);cursor:pointer" onclick="switchTab('login')">Login</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TOAST ═══════════════ -->
+<div id="toast"></div>
+
+<!-- ═══════════════ SCRIPT ═══════════════ -->
+<script>
+
+/* ════ DATA ════ */
+const FUNDS = [
+  {
+    id:'growth', name:'Industone Growth Fund', cat:'Large Cap Equity', type:'PMS',
+    nav:1847.32, prev:1839.85, min:'₹50 Lakhs', color:'#c9a84c',
+    desc:'High-quality large cap businesses with durable competitive advantage and earnings visibility.',
+    returns:{'1M':3.2,'6M':12.4,'1Y':24.8,'3Y':18.6}
+  },
+  {
+    id:'value', name:'Industone Value Fund', cat:'Multi Cap Value', type:'PMS',
+    nav:2341.67, prev:2328.90, min:'₹50 Lakhs', color:'#e8d48b',
+    desc:'Deep-value investing across market caps with emphasis on margin of safety and intrinsic value.',
+    returns:{'1M':2.8,'6M':9.6,'1Y':21.3,'3Y':22.1}
+  },
+  {
+    id:'momentum', name:'Industone Momentum Fund', cat:'Mid & Small Cap', type:'PMS',
+    nav:3124.89, prev:3098.45, min:'₹1 Crore', color:'#a07835',
+    desc:'Momentum-driven strategies in high-growth mid and small cap opportunities on NSE & BSE.',
+    returns:{'1M':4.1,'6M':18.7,'1Y':32.5,'3Y':26.4}
+  },
+  {
+    id:'balanced', name:'Industone Balanced Fund', cat:'Hybrid – Equity & Debt', type:'AIF Cat II',
+    nav:1523.44, prev:1516.78, min:'₹1 Crore', color:'#4caf50',
+    desc:'Balanced allocation between equity and fixed income for stable, risk-calibrated returns.',
+    returns:{'1M':1.9,'6M':7.3,'1Y':15.2,'3Y':14.8}
+  }
+];
+
+let MKT = {
+  indices:[
+    {exch:'NSE', name:'NIFTY 50',      val:23847.65, chg:142.30,  pct:0.60},
+    {exch:'BSE', name:'SENSEX',         val:78520.83, chg:473.55,  pct:0.61},
+    {exch:'NSE', name:'BANK NIFTY',     val:51245.20, chg:-123.40, pct:-0.24},
+    {exch:'NSE', name:'NIFTY IT',       val:38740.90, chg:215.80,  pct:0.56},
+    {exch:'NSE', name:'NIFTY MIDCAP',   val:54820.45, chg:380.20,  pct:0.70},
+    {exch:'NSE', name:'NIFTY SMALLCAP', val:17234.60, chg:192.40,  pct:1.13}
+  ],
+  gainers:[
+    {sym:'TATAMOTORS', price:1024.50, pct:4.82},
+    {sym:'WIPRO',      price:567.30,  pct:3.95},
+    {sym:'HCLTECH',    price:1678.90, pct:3.21},
+    {sym:'BAJFINANCE', price:8120.40, pct:2.87},
+    {sym:'RELIANCE',   price:2941.25, pct:2.43}
+  ],
+  losers:[
+    {sym:'HDFCBANK',  price:1623.45, pct:-1.92},
+    {sym:'KOTAKBANK', price:1892.30, pct:-1.45},
+    {sym:'SUNPHARMA', price:1756.80, pct:-1.22},
+    {sym:'ONGC',      price:278.50,  pct:-0.98},
+    {sym:'NTPC',      price:365.40,  pct:-0.75}
+  ]
+};
+
+const PERF = {
+  '1Y':{
+    labels:["Jun'24",'Jul','Aug','Sep','Oct','Nov','Dec',"Jan'25",'Feb','Mar','Apr','May','Jun'],
+    growth: [100,105.2,108.8,103.4,112.6,118.3,122.1,117.8,121.4,126.8,119.2,124.1,124.8],
+    value:  [100,103.8,107.2,105.1,109.4,115.8,119.2,116.3,120.1,123.4,115.7,120.4,121.3],
+    mom:    [100,107.4,112.0,104.8,116.2,124.8,130.4,122.4,128.6,135.2,122.8,131.4,132.5],
+    nifty:  [100,102.4,104.1,98.3,106.8,112.4,114.8,110.2,113.6,116.9,108.4,112.7,113.8]
+  },
+  '3Y':{
+    labels:["Q1'22","Q2","Q3","Q4","Q1'23","Q2","Q3","Q4","Q1'24","Q2","Q3","Q4","Q1'25"],
+    growth: [100,95.2,108.8,112.4,118.6,125.3,132.1,138.8,142.6,152.3,158.9,164.7,172.4],
+    value:  [100,97.8,110.2,115.1,122.4,130.8,138.2,145.3,150.1,161.4,167.7,175.2,183.6],
+    mom:    [100,92.0,112.4,118.8,128.2,138.6,148.4,158.0,163.8,178.4,186.2,196.4,208.8],
+    nifty:  [100,92.4,104.1,108.3,114.8,120.4,126.8,131.2,136.6,144.9,149.4,154.7,160.8]
+  },
+  '5Y':{
+    labels:['2020','2021','2022','2023','2024','2025'],
+    growth: [100,142.8,138.4,162.6,195.8,228.4],
+    value:  [100,138.6,142.1,170.4,205.3,241.8],
+    mom:    [100,158.4,148.0,186.4,232.8,284.4],
+    nifty:  [100,132.4,128.8,148.6,175.2,198.4]
+  }
+};
+
+const DEMO = {
+  email:'demo@industone.in', password:'demo123',
+  name:'Arjun Mehta', phone:'+91 98001 12345', joinDate:'2023-01-15',
+  portfolio:{
+    holdings:[
+      {fundId:'growth',    units:54.23, investedNav:1450.00},
+      {fundId:'value',     units:42.88, investedNav:1980.00},
+      {fundId:'momentum',  units:32.10, investedNav:2500.00}
+    ],
+    transactions:[
+      {date:'2025-05-12',type:'buy', fund:'Industone Growth Fund',    units:5.42, nav:1803.20,amount:97733.44,  status:'Completed'},
+      {date:'2025-04-28',type:'buy', fund:'Industone Value Fund',     units:4.28, nav:2280.15,amount:97590.42,  status:'Completed'},
+      {date:'2025-03-15',type:'sell',fund:'Industone Momentum Fund',  units:2.00, nav:2980.50,amount:59610.00,  status:'Completed'},
+      {date:'2025-02-10',type:'buy', fund:'Industone Balanced Fund',  units:15.30,nav:1480.30,amount:226485.90, status:'Completed'},
+      {date:'2025-01-05',type:'buy', fund:'Industone Growth Fund',    units:8.00, nav:1720.00,amount:137600.00, status:'Completed'}
+    ]
+  }
+};
+
+/* ════ STATE ════ */
+let perfChart=null, portChart=null;
+
+/* ════ INIT ════ */
+document.addEventListener('DOMContentLoaded', ()=>{
+  buildTicker();
+  buildFunds();
+  buildMarket();
+  buildPerfChart();
+  buildBanner();
+  animCounters();
+  initScroll();
+  checkSession();
+  setInterval(simMarket, 8000);
+});
+
+/* ════ TICKER ════ */
+function buildTicker(){
+  const items=[
+    ...MKT.indices.map(i=>({n:i.name,v:fmtNum(i.val),p:i.pct})),
+    ...FUNDS.map(f=>{
+      const p=((f.nav-f.prev)/f.prev*100);
+      return {n:f.name.replace('Industone ','IFM '),v:'₹'+f.nav.toFixed(2),p};
+    })
+  ];
+  const html=[...items,...items].map(i=>`
+    <div class="t-item">
+      <span class="t-name">${i.n}</span>
+      <span class="t-val">${i.v}</span>
+      <span class="t-chg ${i.p>=0?'up':'down'}">${i.p>=0?'▲':'▼'} ${Math.abs(i.p).toFixed(2)}%</span>
+    </div>`).join('');
+  document.getElementById('tickerTrack').innerHTML=html;
+}
+
+/* ════ BANNER ════ */
+function buildBanner(){
+  const items=[
+    {n:'₹500 Cr+',l:'Assets Under Management'},
+    {n:'2,400+',l:'Happy Investors'},
+    {n:'28.5%',l:'Average Annual Returns'},
+    {n:'8+ Years',l:'Market Experience'},
+    {n:'4 Funds',l:'Investment Strategies'},
+    {n:'NSE + BSE',l:'Market Coverage'},
+    {n:'SEBI',l:'Registered & Regulated'},
+    {n:'100%',l:'Digital Access'},
+  ];
+  const html=[...items,...items].map(i=>`
+    <div class="sb-item">
+      <div><div class="sb-num">${i.n}</div><div class="sb-lbl">${i.l}</div></div>
+    </div>`).join('');
+  document.getElementById('sbTrack').innerHTML=html;
+}
+
+/* ════ FUNDS ════ */
+function buildFunds(){
+  const g=document.getElementById('fundsGrid');
+  g.innerHTML=FUNDS.map(f=>{
+    const chg=f.nav-f.prev;
+    const pct=((chg/f.prev)*100).toFixed(2);
+    const isUp=chg>=0;
+    const rets=Object.entries(f.returns).map(([p,v])=>`
+      <div class="ret-cell">
+        <div class="ret-period">${p}</div>
+        <div class="ret-val ${v>=0?'up':'down'}">${v>=0?'+':''}${v}%</div>
+      </div>`).join('');
+    return `
+    <div class="fund-card fi">
+      <div class="fc-head">
+        <div>
+          <div class="fc-type">${f.type}</div>
+          <div class="fc-name">${f.name}</div>
+          <div class="fc-cat">${f.cat}</div>
+          <div class="fc-desc">${f.desc}</div>
+        </div>
+        <div class="nav-box">
+          <div class="nav-price">₹${f.nav.toFixed(2)}</div>
+          <div class="nav-chg ${isUp?'up':'down'}">${isUp?'▲':'▼'} ${Math.abs(pct)}%</div>
+          <div class="nav-dt">As of today</div>
+        </div>
+      </div>
+      <div class="fc-body">
+        <div class="returns-lbl">Returns</div>
+        <div class="returns-row">${rets}</div>
+        <div class="fc-foot">
+          <div class="fc-min">Minimum: <strong>${f.min}</strong></div>
+          <button class="btn-invest" onclick="openAuth()">Invest Now</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ════ MARKET ════ */
+function buildMarket(){
+  // Index cards
+  const ig=document.getElementById('idxGrid');
+  ig.innerHTML=MKT.indices.slice(0,3).map((idx,i)=>`
+    <div class="idx-card fi">
+      <div class="idx-exch">${idx.exch}</div>
+      <div class="idx-name-big">${idx.name}</div>
+      <div class="idx-val">${fmtNum(idx.val)}</div>
+      <div class="idx-chg-row ${idx.chg>=0?'up':'down'}">
+        ${idx.chg>=0?'▲':'▼'} ${Math.abs(idx.chg).toFixed(2)} (${Math.abs(idx.pct).toFixed(2)}%)
+      </div>
+      <canvas class="idx-mini-chart" id="mc${i}"></canvas>
+    </div>`).join('');
+
+  setTimeout(()=>{
+    MKT.indices.slice(0,3).forEach((idx,i)=>miniSparkline(`mc${i}`,idx));
+  },200);
+
+  // Gainers / Losers
+  const sc=document.getElementById('stockCols');
+  sc.innerHTML=[
+    {title:'Top Gainers',icon:'▲',data:MKT.gainers},
+    {title:'Top Losers', icon:'▼',data:MKT.losers}
+  ].map(col=>`
+    <div class="stk-panel fi">
+      <div class="stk-panel-hd">
+        <span style="color:${col.icon==='▲'?'var(--green)':'var(--red)'};font-size:.9rem">${col.icon}</span>
+        <h4>${col.title} · NSE</h4>
+      </div>
+      <table class="stk-table">
+        <thead><tr><th>Symbol</th><th>Price (₹)</th><th>Change</th></tr></thead>
+        <tbody>
+          ${col.data.map(s=>`
+            <tr>
+              <td>${s.sym}</td>
+              <td>₹${s.price.toLocaleString('en-IN')}</td>
+              <td class="${s.pct>=0?'up':'down'}">${s.pct>=0?'▲':'▼'} ${Math.abs(s.pct).toFixed(2)}%</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`).join('');
+}
+
+function miniSparkline(id, idx){
+  const canvas=document.getElementById(id);
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const base=idx.val-(idx.chg*10);
+  const pts=Array.from({length:14},(_,i)=>{
+    const noise=(Math.random()-.5)*Math.abs(idx.chg)*.8;
+    return base+(idx.chg/13)*i*13+noise;
+  });
+  new Chart(ctx,{
+    type:'line',
+    data:{labels:pts.map(()=>''),datasets:[{data:pts,borderColor:idx.chg>=0?'#4caf50':'#ef5350',
+      borderWidth:1.5,fill:false,tension:.4,pointRadius:0}]},
+    options:{responsive:true,animation:false,
+      plugins:{legend:{display:false},tooltip:{enabled:false}},
+      scales:{x:{display:false},y:{display:false}}}
+  });
+}
+
+/* ════ PERFORMANCE CHART ════ */
+function buildPerfChart(){
+  const ctx=document.getElementById('perfChart').getContext('2d');
+  const d=PERF['1Y'];
+  perfChart=new Chart(ctx,{
+    type:'line',
+    data:{labels:d.labels,datasets:[
+      {label:'Growth Fund',data:d.growth,borderColor:'#c9a84c',backgroundColor:'rgba(201,168,76,.07)',fill:true,tension:.4,borderWidth:2.5,pointRadius:2,pointHoverRadius:5,pointBackgroundColor:'#c9a84c'},
+      {label:'Value Fund', data:d.value, borderColor:'#e8d48b',backgroundColor:'transparent',fill:false,tension:.4,borderWidth:2,  pointRadius:1,pointHoverRadius:4,pointBackgroundColor:'#e8d48b'},
+      {label:'Momentum',   data:d.mom,   borderColor:'#a07835',backgroundColor:'transparent',fill:false,tension:.4,borderWidth:2,  pointRadius:1,pointHoverRadius:4,pointBackgroundColor:'#a07835'},
+      {label:'Nifty 50',   data:d.nifty, borderColor:'rgba(255,255,255,.28)',backgroundColor:'transparent',fill:false,tension:.4,borderWidth:1.5,borderDash:[6,3],pointRadius:0}
+    ]},
+    options:{
+      responsive:true,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#181818',borderColor:'rgba(201,168,76,.3)',borderWidth:1,
+          titleColor:'#c9a84c',bodyColor:'#e4e4e4',
+          callbacks:{label:c=>`  ${c.dataset.label}: ${c.raw.toFixed(1)} (base 100)`}
+        }
+      },
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,.035)'},ticks:{color:'#555',font:{size:10,family:'Montserrat'}}},
+        y:{grid:{color:'rgba(255,255,255,.035)'},ticks:{color:'#555',font:{size:10},callback:v=>v}}
+      }
+    }
+  });
+}
+
+function switchPerf(period,btn){
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const d=PERF[period];
+  perfChart.data.labels=d.labels;
+  perfChart.data.datasets[0].data=d.growth;
+  perfChart.data.datasets[1].data=d.value;
+  perfChart.data.datasets[2].data=d.mom;
+  perfChart.data.datasets[3].data=d.nifty;
+  perfChart.update();
+}
+
+/* ════ COUNTERS ════ */
+function animCounters(){
+  const cs=[
+    {id:'cAUM',  end:500,  pre:'₹',  suf:'Cr+', dec:false},
+    {id:'cCLI',  end:2400, pre:'',   suf:'+',   dec:false},
+    {id:'cRET',  end:28.5, pre:'',   suf:'%',   dec:true},
+    {id:'cEXP',  end:8,    pre:'',   suf:' Yrs',dec:false}
+  ];
+  cs.forEach(c=>{
+    const el=document.getElementById(c.id);
+    if(!el)return;
+    let v=0;const step=c.end/80;
+    const run=()=>{
+      v=Math.min(v+step,c.end);
+      el.textContent=c.pre+(c.dec?v.toFixed(1):Math.floor(v))+c.suf;
+      if(v<c.end)requestAnimationFrame(run);
+    };
+    setTimeout(run,600);
+  });
+}
+
+/* ════ SCROLL OBSERVER ════ */
+function initScroll(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')});
+  },{threshold:.1});
+  document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+}
+
+/* ════ MARKET SIMULATION ════ */
+function simMarket(){
+  MKT.indices=MKT.indices.map(idx=>{
+    const noise=(Math.random()-.49)*idx.val*.0012;
+    const nVal=idx.val+noise;
+    const nChg=idx.chg+noise;
+    return {...idx,val:nVal,chg:nChg,pct:nChg/(nVal-nChg)*100};
+  });
+  buildTicker();
+  if(document.getElementById('dashboard-view').style.display!=='none'){
+    renderDashMarket();
+  }
+}
+
+/* ════ AUTH ════ */
+function getUsers(){
+  const raw=localStorage.getItem('ifm_users');
+  if(!raw){localStorage.setItem('ifm_users',JSON.stringify([DEMO]));return [DEMO];}
+  return JSON.parse(raw);
+}
+function saveUsers(u){localStorage.setItem('ifm_users',JSON.stringify(u));}
+function checkSession(){
+  const s=localStorage.getItem('ifm_session');
+  if(s)showDash(JSON.parse(s));
+}
+
+function doLogin(){
+  const em=document.getElementById('l-email').value.trim();
+  const pw=document.getElementById('l-pass').value;
+  const msg=document.getElementById('msg-login');
+  if(!em||!pw){showMsg(msg,'Please fill in all fields.','err');return;}
+  const users=getUsers();
+  const u=users.find(x=>x.email.toLowerCase()===em.toLowerCase()&&x.password===pw);
+  if(!u){showMsg(msg,'Invalid email or password.','err');return;}
+  localStorage.setItem('ifm_session',JSON.stringify(u));
+  closeAuth();
+  showDash(u);
+}
+
+function doSignup(){
+  const f=document.getElementById('s-first').value.trim();
+  const l=document.getElementById('s-last').value.trim();
+  const em=document.getElementById('s-email').value.trim();
+  const ph=document.getElementById('s-phone').value.trim();
+  const pw=document.getElementById('s-pass').value;
+  const msg=document.getElementById('msg-signup');
+  if(!f||!l||!em||!ph||!pw){showMsg(msg,'Please fill in all fields.','err');return;}
+  if(pw.length<6){showMsg(msg,'Password must be at least 6 characters.','err');return;}
+  const users=getUsers();
+  if(users.find(x=>x.email.toLowerCase()===em.toLowerCase())){showMsg(msg,'Email already registered. Please login.','err');return;}
+  const nu={email:em,password:pw,name:`${f} ${l}`,phone:ph,
+    joinDate:new Date().toISOString().split('T')[0],
+    portfolio:{holdings:[],transactions:[]}};
+  users.push(nu);saveUsers(users);
+  showMsg(msg,'Account created! Redirecting to your portfolio...','ok');
+  setTimeout(()=>{localStorage.setItem('ifm_session',JSON.stringify(nu));closeAuth();showDash(nu);},1400);
+}
+
+function logout(){
+  localStorage.removeItem('ifm_session');
+  document.getElementById('dashboard-view').style.display='none';
+  document.getElementById('main-site').style.display='block';
+  window.scrollTo(0,0);
+  showToast('Logged out successfully.');
+}
+
+function showMsg(el,txt,type){el.textContent=txt;el.className='mmsg '+type;}
+
+/* ════ DASHBOARD ════ */
+function showDash(user){
+  document.getElementById('main-site').style.display='none';
+  document.getElementById('dashboard-view').style.display='block';
+  window.scrollTo(0,0);
+
+  document.getElementById('d-name').textContent=user.name.split(' ')[0];
+  document.getElementById('d-email').textContent=user.email;
+  document.getElementById('d-avatar').textContent=user.name[0].toUpperCase();
+  document.getElementById('d-since').textContent=fmtDate(user.joinDate);
+  document.getElementById('d-refresh').textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('d-navdate').textContent=new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+
+  renderHoldings(user);
+  renderTransactions(user);
+  renderDashMarket();
+  renderDashNav();
+  renderPortChart();
+}
+
+function renderHoldings(user){
+  const h=user.portfolio.holdings;
+  const tb=document.getElementById('d-hold');
+  const colors=['#c9a84c','#e8d48b','#a07835','#4caf50'];
+  let totalV=0,totalI=0;
+
+  if(h.length===0){
+    tb.innerHTML=`<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem">No holdings yet. Contact us to start investing.</td></tr>`;
+    document.getElementById('d-holdcount').textContent='0 funds';
+  } else {
+    tb.innerHTML=h.map((hld,i)=>{
+      const f=FUNDS.find(x=>x.id===hld.fundId);if(!f)return '';
+      const cv=hld.units*f.nav;
+      const inv=hld.units*hld.investedNav;
+      const gain=cv-inv;
+      const gp=((gain/inv)*100).toFixed(2);
+      totalV+=cv;totalI+=inv;
+      const col=colors[i%colors.length];
+      return `<tr>
+        <td><span class="f-dot" style="background:${col}"></span>${f.name}</td>
+        <td>${hld.units.toFixed(2)}</td>
+        <td>₹${f.nav.toFixed(2)}</td>
+        <td>₹${fmtMoney(cv)}</td>
+        <td class="${gain>=0?'up':'down'}">
+          ${gain>=0?'+':'−'}₹${fmtMoney(Math.abs(gain))}<br>
+          <small style="opacity:.7">(${gain>=0?'+':''}${gp}%)</small>
+        </td>
+      </tr>`;
+    }).join('');
+    document.getElementById('d-holdcount').textContent=`${h.length} fund${h.length>1?'s':''}`;
+  }
+
+  const gain=totalV-totalI;
+  const gp=totalI>0?((gain/totalI)*100).toFixed(2):0;
+  document.getElementById('d-pval').textContent='₹'+fmtMoney(totalV);
+  document.getElementById('d-inv').textContent='₹'+fmtMoney(totalI);
+  document.getElementById('d-pnl').textContent=(gain>=0?'+':'−')+'₹'+fmtMoney(Math.abs(gain));
+  document.getElementById('d-pnl').className='dc-val '+(gain>=0?'up':'down');
+  document.getElementById('d-pchg').textContent=(gain>=0?'↑':'↓')+' '+Math.abs(gp)+'% overall';
+  document.getElementById('d-pchg').className='dc-sub '+(gain>=0?'up':'down');
+  document.getElementById('d-pnlp').textContent=(gain>=0?'+':'')+''+gp+'% from cost basis';
+  document.getElementById('d-pnlp').className='dc-sub '+(gain>=0?'up':'down');
+}
+
+function renderTransactions(user){
+  const tb=document.getElementById('d-tx');
+  const txs=user.portfolio.transactions;
+  if(txs.length===0){
+    tb.innerHTML=`<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:1.5rem">No transactions yet.</td></tr>`;
+    return;
+  }
+  tb.innerHTML=txs.slice(0,5).map(tx=>`
+    <tr>
+      <td>${fmtDate(tx.date)}</td>
+      <td><span class="tx-badge ${tx.type}">${tx.type.toUpperCase()}</span></td>
+      <td style="color:var(--gold-lt)">${tx.fund}</td>
+      <td>${tx.units.toFixed(3)}</td>
+      <td>₹${tx.nav.toFixed(2)}</td>
+      <td>₹${fmtMoney(tx.amount)}</td>
+      <td style="color:var(--green)">${tx.status}</td>
+    </tr>`).join('');
+}
+
+function renderDashMarket(){
+  const c=document.getElementById('d-mkt');
+  c.innerHTML=MKT.indices.slice(0,4).map(idx=>`
+    <div class="mmi">
+      <div class="mmi-l">
+        <div class="mmi-name">${idx.name}</div>
+        <div class="mmi-val">${fmtNum(idx.val)}</div>
+      </div>
+      <div class="mmi-chg ${idx.chg>=0?'up':'down'}">${idx.chg>=0?'▲':'▼'} ${Math.abs(idx.pct).toFixed(2)}%</div>
+    </div>`).join('');
+}
+
+function renderDashNav(){
+  const c=document.getElementById('d-nav');
+  c.innerHTML=FUNDS.map(f=>{
+    const chg=f.nav-f.prev;
+    const pct=((chg/f.prev)*100).toFixed(2);
+    const up=chg>=0;
+    return `
+    <div class="nav-item">
+      <div><div class="ni-name">${f.name.replace('Industone ','')}</div><div class="ni-cat">${f.cat}</div></div>
+      <div><div class="ni-price">₹${f.nav.toFixed(2)}</div><div class="ni-chg ${up?'up':'down'}">${up?'▲':'▼'} ${Math.abs(pct)}%</div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderPortChart(){
+  const ctx=document.getElementById('portChart').getContext('2d');
+  if(portChart){portChart.destroy();}
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'];
+  const perf=  [100,104,108,103,111,117,121,116,120,125,117,123,119,126,131,127,134,139];
+  const nifty= [100,102,105,100,107,112,116,110,114,118,109,113,111,117,121,117,123,127];
+  portChart=new Chart(ctx,{
+    type:'line',
+    data:{labels:months,datasets:[
+      {label:'Your Portfolio',data:perf, borderColor:'#c9a84c',backgroundColor:'rgba(201,168,76,.07)',fill:true,tension:.4,borderWidth:2,pointRadius:0},
+      {label:'Nifty 50',      data:nifty,borderColor:'rgba(255,255,255,.25)',backgroundColor:'transparent',fill:false,tension:.4,borderWidth:1.5,borderDash:[5,3],pointRadius:0}
+    ]},
+    options:{
+      responsive:true,
+      plugins:{legend:{labels:{color:'#666',font:{size:10,family:'Montserrat'}}},
+        tooltip:{backgroundColor:'#181818',borderColor:'rgba(201,168,76,.3)',borderWidth:1,titleColor:'#c9a84c',bodyColor:'#e4e4e4'}},
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#444',font:{size:9}}},
+        y:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#444',font:{size:9}}}
+      }
+    }
+  });
+}
+
+/* ════ MODAL ════ */
+function openAuth(){document.getElementById('auth-overlay').classList.add('open');}
+function closeAuth(){
+  document.getElementById('auth-overlay').classList.remove('open');
+  document.getElementById('msg-login').className='mmsg';
+  document.getElementById('msg-signup').className='mmsg';
+}
+function switchTab(tab){
+  ['login','signup'].forEach(t=>{
+    document.getElementById('mtab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('mf-'+t).classList.toggle('active',t===tab);
+  });
+}
+document.getElementById('auth-overlay').addEventListener('click',e=>{
+  if(e.target===document.getElementById('auth-overlay'))closeAuth();
+});
+
+/* ════ NAV ════ */
+function scrollTo(id){
+  const el=document.getElementById(id);
+  if(el)el.scrollIntoView({behavior:'smooth'});
+}
+function goHome(){
+  const dash=document.getElementById('dashboard-view');
+  if(dash.style.display!=='none')return;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleNav(){
+  const m=document.getElementById('navLinks');
+  m.style.display=m.style.display==='flex'?'none':'flex';
+  m.style.flexDirection='column';
+  m.style.position='absolute';m.style.top='68px';m.style.left='0';
+  m.style.right='0';m.style.background='rgba(6,6,6,.98)';
+  m.style.padding='1rem 2rem';m.style.borderBottom='1px solid var(--border)';
+}
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>40);
+});
+
+/* ════ CONTACT ════ */
+function submitContact(btn){
+  btn.textContent='Sending...';btn.disabled=true;
+  setTimeout(()=>{
+    btn.textContent='✓ Sent! Our team will contact you within 24 hours.';
+    btn.style.background='linear-gradient(135deg,#2e7d32,#4caf50)';
+    showToast('Thank you! We will call you soon.');
+    setTimeout(()=>{btn.textContent='Request Consultation';btn.style.background='';btn.disabled=false;},4000);
+  },1500);
+}
+
+/* ════ TOAST ════ */
+function showToast(msg,dur=3200){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+/* ════ FORMAT HELPERS ════ */
+function fmtNum(n){return n.toLocaleString('en-IN',{maximumFractionDigits:2});}
+function fmtMoney(n){
+  if(n>=10000000)return(n/10000000).toFixed(2)+' Cr';
+  if(n>=100000)return(n/100000).toFixed(2)+' L';
+  return n.toLocaleString('en-IN',{maximumFractionDigits:2});
+}
+function fmtDate(d){
+  return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+}
+
+</script>
+</body>
+</html>
